@@ -9,4 +9,6 @@ export class WebduinosystemComponent {
 
   starRate = 2;
   heartRate = 4;
+
+  //xxx
 }
