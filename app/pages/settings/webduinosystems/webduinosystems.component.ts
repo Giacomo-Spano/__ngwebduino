@@ -23,44 +23,94 @@ export class WebduinosystemsComponent implements OnInit {
       addButtonContent: '<i class="nb-plus"></i>',
       createButtonContent: '<i class="nb-checkmark"></i>',
       cancelButtonContent: '<i class="nb-close"></i>',
+      confirmCreate: true,
+      
     },
     edit: {
       editButtonContent: '<i class="nb-edit"></i>',
       saveButtonContent: '<i class="nb-checkmark"></i>',
       cancelButtonContent: '<i class="nb-close"></i>',
+      mode: 'inline',
+      confirmSave: true,
     },
     delete: {
       deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
+      confirmDelete: true,      
     },
     columns: {
       id: {
         title: 'ID',
         type: 'number',
+        editable: false
       },
       name: {
-        title: 'First Name',
+        title: 'Nome',
         type: 'string',
       },
       type: {
-        title: 'Last Name',
+        title: 'Tipo',
         type: 'string',
+        editor: {
+          type: 'list',
+          config: {
+            list: [{value: 'value1', title: 'Title1' },{value: 'value2', title: 'Title2' }]
+          },
+        },
       },
-    },
+      enabled: {
+        title: 'Abilitato',
+        type: 'boolean',
+        editor: {
+          type: 'checkbox',
+          /*config: {
+            true: 'Abilitato',
+            false: 'Disabilitato',
+          },*/
+        },
+      },
+    }
   };
 
   source: LocalDataSource = new LocalDataSource();
 
-  onUserRowSelect(event): void {
+  onEditConfirm(event): void {
+
+    /*if (window.confirm('Are you sure you want to save?')) {
+      event.newData['name'] += ' + added in code';
+      event.confirm.resolve(event.newData);
+    } else {
+      event.confirm.reject();
+    }*/
+
     console.log(event);
-    this.router.navigate(['./pages/settings/webduinosystem']); 
+    this.webduinosystemService.updateWebduinosystem(event.newData)
+      .subscribe(webduinosystem => {
+        this.webduinosystems.push(webduinosystem);
+      });   
+
+    event.confirm.resolve(event.newData);
     
   }
 
-  /*constructor(private service: SmartTableService) {
-    const data = this.service.getData();
-    this.source.load(data);
-  }*/
+  onCreateConfirm(event): void {
+
+    event.newData.id = 0;
+    console.log(event);
+    this.webduinosystemService.updateWebduinosystem(event.newData)
+      .subscribe(webduinosystem => {
+        this.webduinosystems.push(webduinosystem);
+      });   
+
+    event.confirm.resolve(event.newData);
+    
+  }
+
+  onUserRowSelect(event): void {
+    console.log(event);
+    this.router.navigate(['./pages/settings/webduinosystem/'], 
+              { queryParams: { id: event.selected[0].id } }); 
+    
+  }
 
   onDeleteConfirm(event): void {
     if (window.confirm('Are you sure you want to delete?')) {
@@ -76,10 +126,6 @@ export class WebduinosystemsComponent implements OnInit {
 
   ngOnInit() {
     this.getWebduinosystems();
-    
-    //data = this.webduinosystems;
-    //const data = this.webduinosystems;
-
   }
 
   getWebduinosystems(): void {
@@ -89,6 +135,13 @@ export class WebduinosystemsComponent implements OnInit {
         this.webduinosystems = webduinosystems
         const data = webduinosystems;
         this.source.load(data);
+      });
+  }
+
+  save(webduinosystem: Webduinosystem): void {
+    this.webduinosystemService.updateWebduinosystem(webduinosystem)
+      .subscribe(webduinosystem => {
+        this.webduinosystems.push(webduinosystem);
       });
   }
 

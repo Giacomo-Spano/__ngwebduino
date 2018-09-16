@@ -3,22 +3,7 @@
     <label>Webduinosystem name:
       <input #webduinosystemName />
     </label>
-    <!-- (click) passes input value to add() and then clears the input -->
-    <button (click)="add(webduinosystemName.value); webduinosystemName.value=''">
-      add
-    </button>
-    <button class="delete" title="delete hero"
-  (click)="delete(webduinosystemName)">x</button>
-  </div>
-<ul class="webduinosystems">
-    <li *ngFor="let webduinosystem of webduinosystems">
-      <a routerLink="/detail/{{webduinosystem.id}}">
-        <span class="badge">{{webduinosystem.id}}</span> {{webduinosystem.name}}
-      </a>
-      <button class="delete" title="delete webduinosystem"
-      (click)="delete(webduinosystem)">x</button>
-    </li>
-  </ul>
+
 
   <nb-card>
     <nb-card-header>
@@ -26,7 +11,7 @@
     </nb-card-header>
   
     <nb-card-body>
-      <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onDeleteConfirm($event)" (userRowSelect)="onUserRowSelect($event)">
+      <ng2-smart-table [settings]="settings" [source]="source" (editConfirm)="onEditConfirm($event)" (createConfirm)="onCreateConfirm($event)" (deleteConfirm)="onDeleteConfirm($event)" (userRowSelect)="onUserRowSelect($event)">
       </ng2-smart-table>
     </nb-card-body>
   </nb-card>

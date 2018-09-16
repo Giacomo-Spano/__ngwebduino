@@ -8,7 +8,9 @@ import { Webduinosystem } from './webduinosystem';
 import { MessageService } from './message.service';
 
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  headers: new HttpHeaders({ 
+    'Content-Type': 'application/json',
+  })
 };
 
 @Injectable({
@@ -18,41 +20,48 @@ const httpOptions = {
 /** PUT: update the hero on the server */
 export class WebduinosystemService {
 
-   private webduinosystemsUrl = 'http://giacomohome.ddns.net:9090/webduino/system?requestcommand=webduinosystems';
-   private webduinosystemUrl = 'http://giacomohome.ddns.net:9090/webduino/system?requestcommand=webduinosystem&id=';
+   //private webduinosystemsUrl = 'http://giacomohome.ddns.net:9090/webduino/system?requestcommand=webduinosystems';
+   //private webduinosystemUrl = 'http://giacomohome.ddns.net:9090/webduino/system?requestcommand=webduinosystem&id=';
+   private webduinosystemUrl = 'http://giacomohome.ddns.net:9090/webduino/system';
 
    constructor(
     private http: HttpClient,
     private messageService: MessageService) { }
 
-    /** GET heroes from the server */
+    /** GET webduinosystems from the server */
     getWebduinosystems (): Observable<Webduinosystem[]> {
-      return this.http.get<Webduinosystem[]>(this.webduinosystemsUrl)
+      return this.http.get<Webduinosystem[]>(this.webduinosystemUrl + '?requestcommand=webduinosystems')
         .pipe(
           tap(webduinosystems => this.log('fetched webduinosystems')),
           catchError(this.handleError('getWebduinosystems', []))
         );
     }
 
-   updateWebduinosystem(webduinosystem: Webduinosystem): Observable<any> {
-     return this.http.put(this.webduinosystemsUrl, webduinosystem, httpOptions).pipe(
-       tap(_ => this.log(`updated hero id=${webduinosystem.id}`)),
-       catchError(this.handleError<any>('updateWebduinosystem'))
-     );
-   }
+   
 
-   /** GET hero by id. Will 404 if id not found */
+   /** GET webduinosystem by id. Will 404 if id not found */
   getWebduinosystem(id: number): Observable<Webduinosystem> {
-    const url = `${this.webduinosystemUrl}` + `${id}`;
+    const url = `${this.webduinosystemUrl}` + '?requestcommand=webduinosystem&id=' + `${id}`;
     return this.http.get<Webduinosystem>(url).pipe(
-      tap(_ => this.log(`fetched hero id=${id}`)),
+      tap(_ => this.log(`fetched webduinosystem id=${id}`)),
       catchError(this.handleError<Webduinosystem>(`getWebduinosystem id=${id}`))
     );
   }
 
+  updateWebduinosystem(webduinosystem: Webduinosystem): Observable<any> {
+    const url = this.webduinosystemUrl + '?data=webduinosystem';
+
+    
+    //return this.http.post(url, webduinosystem, options)
+    return this.http.post(url, webduinosystem, httpOptions)
+    .pipe(
+       tap(_ => this.log(`updated webduinosystem id=${webduinosystem.id}`)),
+       catchError(this.handleError<any>('updateWebduinosystem'))
+     );
+   }
   /** POST: add a new hero to the server */
   addWebduinosystem (webduinosystem: Webduinosystem): Observable<Webduinosystem> {
-    return this.http.post<Webduinosystem>(this.webduinosystemsUrl, webduinosystem, httpOptions).pipe(
+    return this.http.post<Webduinosystem>(this.webduinosystemUrl, webduinosystem, httpOptions).pipe(
       tap((hero: Webduinosystem) => this.log(`added hero w/ id=${hero.id}`)),
       catchError(this.handleError<Webduinosystem>('addHero'))
     );
@@ -61,7 +70,7 @@ export class WebduinosystemService {
   /** DELETE: delete the hero from the server */
   deleteWebduinosystem (webduinosystem: Webduinosystem | number): Observable<Webduinosystem> {
     const id = typeof webduinosystem === 'number' ? webduinosystem : webduinosystem.id;
-    const url = `${this.webduinosystemsUrl}/${id}`;
+    const url = `${this.webduinosystemUrl}/${id}`;
 
     return this.http.delete<Webduinosystem>(url, httpOptions).pipe(
       tap(_ => this.log(`deleted webduinosystem id=${id}`)),
