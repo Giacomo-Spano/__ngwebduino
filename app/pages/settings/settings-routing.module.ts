@@ -1,10 +1,11 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { SettingsComponent } from './settings.component';
 import { WebduinosystemsComponent } from './webduinosystems//webduinosystems.component';
 import { FormLayoutsComponent } from './form-layouts/form-layouts.component';
-import { WebduinosystemComponent } from './webduinosystem/webduinosystem.component';
+import { WebduinosystemComponent } from './webduinosystems/webduinosystem/webduinosystem.component';
+import { SensorComponent } from './sensor/sensor.component';
 
 const routes: Routes = [{
   path: '',
@@ -18,6 +19,9 @@ const routes: Routes = [{
   }, {
     path: 'webduinosystem',
     component: WebduinosystemComponent,
+  }, {
+    path: 'sensor',
+    component: SensorComponent,
   }],
 }];
 
@@ -28,6 +32,7 @@ const routes: Routes = [{
   exports: [
     RouterModule,
   ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class SettingsRoutingModule {
 

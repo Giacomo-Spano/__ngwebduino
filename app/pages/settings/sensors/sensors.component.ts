@@ -1,25 +1,21 @@
-import { Component, OnInit} from '@angular/core';
-import { WebduinosystemService } from '../../../webduinosystem.service';
-import { Webduinosystem } from '../../../webduinosystem';
-import { WebduinosystemType } from '../../../webduinosystemtype';
-import { MessageService } from '../../../message.service';
+import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
-
-
-import {Router} from "@angular/router";
+import { Sensor } from '../../../sensor';
+import { SensorType } from '../../../sensortype';
+import { WebduinosystemService } from '../../../webduinosystem.service';
+import { MessageService } from '../../../message.service';
+import { Router } from '@angular/router';
+import { Webduinosystem } from '../../../webduinosystem';
 
 @Component({
-  selector: 'ngx-webduinosystems',
-  styleUrls: ['./webduinosystems.component.scss'],
-  templateUrl: './webduinosystems.component.html',
+  selector: 'ngx-sensors',
+  templateUrl: './sensors.component.html',
+  styleUrls: ['./sensors.component.scss']
 })
+export class SensorsComponent implements OnInit {
 
-export class WebduinosystemsComponent implements OnInit {
-
-  starRate = 2;
-  heartRate = 4;
-  webduinosystems: Webduinosystem[];
-  webduinosystemtypes: WebduinosystemType[];
+  sensors: Sensor[];
+  sensortypes: SensorType[];
 
   settings = {
     add: {
@@ -45,8 +41,26 @@ export class WebduinosystemsComponent implements OnInit {
         type: 'number',
         editable: false,
       },
+      shieldid: {
+        title: 'ShieldID',
+        type: 'number',
+        editable: false,
+      },
+      parentid: {
+        title: 'ParentID',
+        type: 'number',
+        editable: false,
+      },
+      subaddress: {
+        title: 'Subaddress',
+        type: 'string',
+      },
       name: {
         title: 'Nome',
+        type: 'string',
+      },
+      description: {
+        title: 'Descrizione',
         type: 'string',
       },
       type: {
@@ -64,16 +78,33 @@ export class WebduinosystemsComponent implements OnInit {
         type: 'boolean',
         editor: {
           type: 'checkbox',
-          /*config: {
-            true: 'Abilitato',
-            false: 'Disabilitato',
-          },*/
+        },
+      },
+      pin: {
+        title: 'Pin',
+        type: 'string',
+        editor: {
+          type: 'list',
+          config: {
+            list: [{value: 'value1', title: 'Title1' },{value: 'value2', title: 'Title2' }]
+          },
         },
       },
     }
   };
 
   source: LocalDataSource = new LocalDataSource();
+  
+  constructor(private webduinosystemService: WebduinosystemService,
+    private messageService: MessageService,
+    private router: Router) {
+
+  }
+
+  ngOnInit() {
+    this.getSensors();
+    this.getSensorTypes();
+  }
 
   onEditConfirm(event): void {
 
@@ -85,13 +116,11 @@ export class WebduinosystemsComponent implements OnInit {
     }*/
 
     //console.log(event);
-    this.webduinosystemService.updateWebduinosystem(event.newData)
+    /*this.webduinosystemService.updateSensor(event.newData)
       .subscribe(webduinosystem => {
         this.webduinosystems.push(webduinosystem);
       });
-
-    event.confirm.resolve(event.newData);
-
+    event.confirm.resolve(event.newData);*/
   }
 
   onCreateConfirm(event): void {
@@ -100,7 +129,7 @@ export class WebduinosystemsComponent implements OnInit {
     //console.log(event);
     this.webduinosystemService.updateWebduinosystem(event.newData)
       .subscribe(webduinosystem => {
-        this.webduinosystems.push(webduinosystem);
+        this.sensors.push(webduinosystem);
       });   
 
     event.confirm.resolve(event.newData);
@@ -109,7 +138,7 @@ export class WebduinosystemsComponent implements OnInit {
 
   onUserRowSelect(event): void {
     //console.log(event);
-    this.router.navigate(['./pages/settings/webduinosystem/'], 
+    this.router.navigate(['./pages/settings/sensor/'], 
               { queryParams: { id: event.selected[0].id } }); 
 
   }
@@ -122,38 +151,27 @@ export class WebduinosystemsComponent implements OnInit {
     }
   }
 
-  constructor(private webduinosystemService: WebduinosystemService,
-              private messageService: MessageService,
-              private router: Router) {
-
-   }
-
-  ngOnInit() {
-    this.getWebduinosystems();
-    this.getWebduinosystemtypes();
-  }
-
-  getWebduinosystemtypes(): void {
-    this.webduinosystemService.getWebduinosystemTypes()
-    .subscribe(webduinosystemtypes => 
+  getSensorTypes(): void {
+    this.webduinosystemService.getSensorTypes()
+    .subscribe(sensortypes => 
       {
-        this.webduinosystemtypes = webduinosystemtypes;
+        this.sensortypes = sensortypes;
       });
   }
 
-  getWebduinosystems(): void {
-    this.webduinosystemService.getWebduinosystems()
-    .subscribe(webduinosystems => 
+  getSensors(): void {
+    this.webduinosystemService.getSensors()
+    .subscribe(sensors => 
       {
-        this.webduinosystems = webduinosystems
-        this.source.load(webduinosystems);
+        this.sensors = sensors
+        this.source.load(sensors);
       });
   }
 
-  save(webduinosystem: Webduinosystem): void {
-    this.webduinosystemService.updateWebduinosystem(webduinosystem)
-      .subscribe(webduinosystem => {
-        this.webduinosystems.push(webduinosystem);
+  save(sensor: Sensor): void {
+    this.webduinosystemService.updateSensor(sensor)
+      .subscribe(sensor => {
+        this.sensors.push(sensor);
       });
   }
 
@@ -161,15 +179,15 @@ export class WebduinosystemsComponent implements OnInit {
   add(name: string): void {
     name = name.trim();
     if (!name) { return; }
-    this.webduinosystemService.addWebduinosystem({ name } as Webduinosystem)
-      .subscribe(webduinosystem => {
-        this.webduinosystems.push(webduinosystem);
+    this.webduinosystemService.addSensor({ name } as Sensor)
+      .subscribe(sensor => {
+        this.sensors.push(sensor);
       });
   }
 
-  delete(webduinosystem: Webduinosystem): void {
-    this.webduinosystems = this.webduinosystems.filter(h => h !== webduinosystem);
-    this.webduinosystemService.deleteWebduinosystem(webduinosystem).subscribe();
+  delete(sensor: Sensor): void {
+    this.sensors = this.sensors.filter(h => h !== sensor);
+    this.webduinosystemService.deleteSensor(sensor).subscribe();
   }
 
 }

@@ -1,0 +1,49 @@
+<div *ngIf="sensor">
+  
+    <div class="row">
+      <div class="col-md-12">
+        <nb-card>
+          <nb-card-header>Dati generali</nb-card-header>
+            <nb-card-body>
+                
+                <ngx-alertmessage [alertmessage]="alertmessage"></ngx-alertmessage>
+    
+                 <div class="form-group row">
+                    <label for="inputID" class="col-sm-3 col-form-label">ID</label>
+                     <div class="col-sm-9">
+                       <input [(ngModel)]="sensor.id" [value]="sensor.id" type="text" class="form-control" id="inputID" placeholder="ID" disabled>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="inputName" class="col-sm-3 col-form-label">Name</label>
+                      <div class="col-sm-9">
+                        <input [(ngModel)]="sensor.name" type="text" class="form-control" id="inputName" placeholder="Name">
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="inputType" class="col-sm-3 col-form-label">Tipo</label>
+                      <div class="col-sm-9">
+                        <select [(ngModel)]="webduinosystem.type" class="form-control" id="type" >
+                              <option *ngFor="let type of webduinosystemtypes" [value]="type.type">{{type.description}}</option>
+                        </select>
+                        
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="inputEnabled" class="col-sm-3 col-form-label">Abilitato</label>
+                        <div class="col-sm-9">
+                            <nb-checkbox [(ngModel)]="webduinosystem.enabled">Checkbox 2</nb-checkbox>
+                          </div>
+                    </div>
+    
+              <button class="btn btn-primary" (click)="onSave()">Salva</button>
+              <button class="btn btn-primary" (click)="onCancel()">Annulla</button>
+    
+              <button class="btn btn-success" (click)="showLargeModal()">Large modal</button>
+         
+            </nb-card-body>
+        </nb-card>
+      </div>
+    </div>
+    
+</div>

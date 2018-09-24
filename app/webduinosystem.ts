@@ -1,8 +1,8 @@
 import { Scenario } from "./scenario";
-import { Sensor } from "./sensor";
-//import { Zone } from "./zone";
-import { Service } from "./service";
-import { Zone } from "./zone";
+import { WebduinosystemActuator } from "./webduinosystemactuator";
+import { WebduinosystemZone } from "./webduinosystemzone";
+import { WebduinosystemService } from "./webduinosystem.service";
+
 
 export class Webduinosystem {
     id: number;
@@ -10,7 +10,7 @@ export class Webduinosystem {
     type: string;
     enabled: boolean;
     scenarios: Scenario[];
-    actuators: Sensor[];
-    zones: Zone[];
-    services: Service[];
+    actuators: WebduinosystemActuator[];
+    zones: WebduinosystemZone[];
+    services: WebduinosystemService[];
   }
